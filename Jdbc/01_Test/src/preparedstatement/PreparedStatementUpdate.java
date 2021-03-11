@@ -23,21 +23,8 @@ public class PreparedStatementUpdate {
         Connection connect = null;
         PreparedStatement ps = null;
         try {
-            //读取4个基本信息
-            InputStream resource = ClassLoader.getSystemClassLoader().getResourceAsStream("jdbc.properties");
-            Properties prop = new Properties();
-            prop.load(resource);
-
-            String user = prop.getProperty("user");
-            String password = prop.getProperty("password");
-            String driverClass = prop.getProperty("driverClass");
-            String url = prop.getProperty("url");
-
-            //加载驱动
-            Class.forName(driverClass);
-
             //获取连接
-            connect = DriverManager.getConnection(url, user, password);
+            connect = util.JDBCUtils.getConnection();
 
             //预编译sql语句，返回PreparedStatement的实例
             String sql = "insert into customers(name, email, birth) values(?,?,?)"; //?是占位符
@@ -52,28 +39,11 @@ public class PreparedStatementUpdate {
 
             //执行操作
             ps.execute();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        } catch (ParseException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             //资源关闭
-            try {
-                if (ps != null)
-                    ps.close();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-            try {
-                if (connect != null)
-                    connect.close();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
+            util.JDBCUtils.closeResource(connect, ps);
         }
     }
 }
