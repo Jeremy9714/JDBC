@@ -9,6 +9,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Properties;
 
+import util.JDBCUtils;
+
 /**
  * PreparedStatement的增删改操作
  *
@@ -16,6 +18,56 @@ import java.util.Properties;
  * @create 2021-03-11-20:57
  */
 public class PreparedStatementUpdate {
+
+    //通用的增、删、改操作
+    public void update(String sql, Object... args) throws Exception {
+        Connection connect = JDBCUtils.getConnection();
+        PreparedStatement ps = connect.prepareStatement(sql);
+
+        for (int i = 0; i < args.length; ++i) {
+            ps.setObject(i + 1, args[i]);
+        }
+        ps.execute();
+        JDBCUtils.closeResource(connect, ps);
+    }
+
+    //测试通用方法
+    @Test
+    public void testCommonUpdate(){
+        //String sql = "delete from `customers` where name = ? and email = ?";
+        String sql = "insert into customers(name, email) values(?,?)";
+        try {
+            update(sql, "猛汉","menghan@gmail.com");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    //修改表中的一条记录
+    @Test
+    public void testUpdate() {
+        Connection connect = null;
+        PreparedStatement ps = null;
+        try {
+            //获取连接
+            connect = JDBCUtils.getConnection();
+
+            //预编译sql语句
+            String sql = "update customers set email = ? where name = ?";
+            ps = connect.prepareStatement(sql);
+
+            //填充占位符
+            ps.setString(1, "menghan@sina.com");
+            ps.setString(2, "猛汉");
+
+            //执行操作
+            ps.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            JDBCUtils.closeResource(connect, ps);
+        }
+    }
 
     //向表中添加一条记录
     @Test
