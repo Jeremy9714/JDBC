@@ -3,10 +3,9 @@ package preparedstatement;
 import org.junit.Test;
 import util.JDBCUtils;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.sql.*;
 
 /**
  * 针对于customers表的查询操作
@@ -17,13 +16,61 @@ import java.sql.ResultSet;
 public class CustomerForQuery {
 
     @Test
-    public void test() {
+    public void testCommonRead(){
+        String sql = "select id, name, email, birth from customers where id > ?";
+        read(sql,10);
+    }
+
+    //Customer表的通用查询操作
+    public void read(String sql, Object ...args){
+        Connection connect = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            connect = JDBCUtils.getConnection();
+            ps = connect.prepareStatement(sql);
+            for(int i=0;i<args.length;++i){
+                ps.setObject(i+1,args[i]);
+            }
+
+            rs = ps.executeQuery();
+            //获取结果集的元数据
+            ResultSetMetaData rsmd = rs.getMetaData();
+            //通过结果集元数据获取结果集中的列数
+            int count = rsmd.getColumnCount();
+
+            while(rs.next()){
+                Customer customer = new Customer();
+                for (int i =0; i< count;++i){
+                    //获取列值
+                    Object value = rs.getObject(i + 1);
+
+                    //获取每个列的列名
+                    String columnName = rsmd.getColumnName(i + 1);
+
+                    //通过反射给Customer对象指定的属性赋值
+                    Field field = customer.getClass().getDeclaredField(columnName);
+                    field.setAccessible(true);
+                    field.set(customer,value);
+                }
+                //输出结果
+                System.out.println(customer);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            JDBCUtils.closeResource(connect,ps,rs);
+        }
+    }
+
+    @Test
+    public void testRead() {
         Connection connect = null;
         PreparedStatement ps = null;
         ResultSet resultSet = null;
         try {
             connect = JDBCUtils.getConnection();
-            String sql = "select * from customers where id > ?";
+            String sql = "select id, name, email, birth from customers where id > ?";
             ps = connect.prepareStatement(sql);
             ps.setInt(1, 8);
 
