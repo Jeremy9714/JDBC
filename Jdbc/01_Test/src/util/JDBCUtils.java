@@ -1,10 +1,7 @@
 package util;
 
 import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.Properties;
 
 /**
@@ -35,9 +32,31 @@ public class JDBCUtils {
         return connect;
     }
 
-    //关闭数据库连接
+    //关闭数据库连接和Statement
     public static void closeResource(Connection connect, Statement ps) {
         //资源关闭
+        try {
+            if (ps != null)
+                ps.close();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        try {
+            if (connect != null)
+                connect.close();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    //关闭资源的操作
+    public static void closeResource(Connection connect, Statement ps, ResultSet rs) {
+        try {
+            if (rs != null)
+                rs.close();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
         try {
             if (ps != null)
                 ps.close();
