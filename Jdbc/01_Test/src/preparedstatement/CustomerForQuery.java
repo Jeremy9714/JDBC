@@ -1,10 +1,10 @@
 package preparedstatement;
 
+import bean.Customer;
 import org.junit.Test;
 import util.JDBCUtils;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;

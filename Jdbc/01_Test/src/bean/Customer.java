@@ -1,4 +1,4 @@
-package preparedstatement;
+package bean;
 
 import java.sql.Date;
 
