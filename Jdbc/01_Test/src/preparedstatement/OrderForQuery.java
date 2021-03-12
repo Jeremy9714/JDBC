@@ -47,6 +47,7 @@ public class OrderForQuery {
                     Object value = rs.getObject(i + 1);
 
                     //获取列的别名: getColumnLabel(int)
+//                  String columnName = rsmd.getColumnName(i + 1);
                     String columnLabel = rsmd.getColumnLabel(i + 1);
 
                     Field field = order.getClass().getDeclaredField(columnLabel);
