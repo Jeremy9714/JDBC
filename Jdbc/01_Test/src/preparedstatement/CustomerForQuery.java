@@ -6,6 +6,8 @@ import util.JDBCUtils;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 针对于customers表的查询操作
@@ -18,11 +20,16 @@ public class CustomerForQuery {
     @Test
     public void testCommonRead(){
         String sql = "select id, name, email, birth from customers where id > ?";
-        read(sql,10);
+        List<Customer> customers = read(sql, 10);
+        if(customers!=null){
+            for (Customer customer : customers) {
+                System.out.println(customer);
+            }
+        }
     }
 
     //Customer表的通用查询操作
-    public void read(String sql, Object ...args){
+    public List<Customer> read(String sql, Object ...args){
         Connection connect = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -39,6 +46,8 @@ public class CustomerForQuery {
             //通过结果集元数据获取结果集中的列数
             int count = rsmd.getColumnCount();
 
+            List<Customer> list = new ArrayList<>();
+
             while(rs.next()){
                 Customer customer = new Customer();
                 for (int i =0; i< count;++i){
@@ -53,14 +62,15 @@ public class CustomerForQuery {
                     field.setAccessible(true);
                     field.set(customer,value);
                 }
-                //输出结果
-                System.out.println(customer);
+                list.add(customer);
             }
+            return list;
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             JDBCUtils.closeResource(connect,ps,rs);
         }
+        return null;
     }
 
     @Test
