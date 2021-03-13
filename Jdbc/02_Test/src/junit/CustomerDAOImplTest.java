@@ -1,7 +1,7 @@
 package junit;
 
 import bean.Customer;
-import dao.CustomerDAOImpl;
+import dao2.CustomerDAOImpl;
 import org.junit.Test;
 import util.JDBCUtils;
 
