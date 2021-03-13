@@ -19,7 +19,7 @@ import java.util.List;
  * @author Chenyang
  * @create 2021-03-12-17:16
  */
-public class QueryTest {
+public class PreparedStatementQuery {
 
     //查询表中的多条记录
     @Test

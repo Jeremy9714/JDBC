@@ -20,15 +20,22 @@ import util.JDBCUtils;
 public class PreparedStatementUpdate {
 
     //通用的增、删、改操作
-    public void update(String sql, Object... args) throws Exception {
-        Connection connect = JDBCUtils.getConnection();
-        PreparedStatement ps = connect.prepareStatement(sql);
+    public void update(String sql, Object... args){
+        Connection connect = null;
+        PreparedStatement ps = null;
+        try {
+            connect = JDBCUtils.getConnection();
+            ps = connect.prepareStatement(sql);
 
-        for (int i = 0; i < args.length; ++i) {
-            ps.setObject(i + 1, args[i]);
+            for (int i = 0; i < args.length; ++i) {
+                ps.setObject(i + 1, args[i]);
+            }
+            ps.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            JDBCUtils.closeResource(connect, ps);
         }
-        ps.execute();
-        JDBCUtils.closeResource(connect, ps);
     }
 
     //测试通用方法
