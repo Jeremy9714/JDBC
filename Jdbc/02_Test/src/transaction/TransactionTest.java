@@ -106,7 +106,7 @@ public class TransactionTest {
         return 0;
     }
 
-    //**************************************************************
+    //*************************数据库连接的隔离等级*****************************
     //查询
     @Test
     public void testTxSelect() throws Exception {
