@@ -4,6 +4,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.mchange.v2.c3p0.DataSources;
 import com.mchange.v2.c3p0.impl.C3P0PooledConnection;
 import org.junit.Test;
+import util.JDBCUtils;
 
 import javax.sql.DataSource;
 import java.beans.PropertyVetoException;
@@ -43,8 +44,7 @@ public class C3P0Test {
     @Test
     public void testConnction2() throws Exception {
         //根据配置文件初始化c3p0数据库连接池
-        ComboPooledDataSource cpds = new ComboPooledDataSource("helloc3p0");
-        Connection connect = cpds.getConnection();
+        Connection connect = JDBCUtils.getConnection1();
         System.out.println(connect);
 
         //DataSources.destroy(cpds);

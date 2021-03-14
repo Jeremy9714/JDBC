@@ -1,5 +1,7 @@
 package util;
 
+import com.mchange.v2.c3p0.ComboPooledDataSource;
+
 import java.io.InputStream;
 import java.sql.*;
 import java.util.Properties;
@@ -11,6 +13,15 @@ import java.util.Properties;
  * @create 2021-03-11-21:41
  */
 public class JDBCUtils {
+
+    //将数据库连接池声明为静态，减少资源的占用
+    private static ComboPooledDataSource cpds = new ComboPooledDataSource("helloc3p0");
+
+    //通过c3p0数据库连接池获取数据库连接
+    public static Connection getConnection1() throws Exception {
+        Connection connect = cpds.getConnection();
+        return connect;
+    }
 
     //获取数据库连接
     public static Connection getConnection() throws Exception {

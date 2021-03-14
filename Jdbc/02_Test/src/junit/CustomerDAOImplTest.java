@@ -64,7 +64,7 @@ public class CustomerDAOImplTest {
     public void getCustomerById() {
         Connection connect = null;
         try {
-            connect = JDBCUtils.getConnection();
+            connect = JDBCUtils.getConnection1();
             Customer customer = dao.getCustomerById(connect, 24);
             System.out.println(customer);
         } catch (Exception e) {
@@ -78,7 +78,7 @@ public class CustomerDAOImplTest {
     public void getAll() {
         Connection connect = null;
         try {
-            connect = JDBCUtils.getConnection();
+            connect = JDBCUtils.getConnection1();
             List<Customer> list = dao.getAll(connect);
             System.out.println("表中数据一览");
             list.forEach(System.out::println);
@@ -93,7 +93,7 @@ public class CustomerDAOImplTest {
     public void getCount() {
         Connection connect = null;
         try {
-            connect = JDBCUtils.getConnection();
+            connect = JDBCUtils.getConnection1();
             long count = dao.getCount(connect);
             System.out.println("表中数据的条目数: " + count);
         } catch (Exception e) {
@@ -107,7 +107,7 @@ public class CustomerDAOImplTest {
     public void getMaxBirth() {
         Connection connect = null;
         try {
-            connect = JDBCUtils.getConnection();
+            connect = JDBCUtils.getConnection1();
             Date maxBirth = dao.getMaxBirth(connect);
             System.out.println("最晚生日为: " + maxBirth);
         } catch (Exception e) {
