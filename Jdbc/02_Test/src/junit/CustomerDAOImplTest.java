@@ -93,7 +93,7 @@ public class CustomerDAOImplTest {
     public void getCount() {
         Connection connect = null;
         try {
-            connect = JDBCUtils.getConnection();
+            connect = JDBCUtils.getConnectionViaDruid();
             long count = dao.getCount(connect);
             System.out.println("表中数据的条目数: " + count);
         } catch (Exception e) {

@@ -1,5 +1,6 @@
 package util;
 
+import com.alibaba.druid.pool.DruidDataSourceFactory;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.dbcp.BasicDataSourceFactory;
@@ -22,7 +23,7 @@ public class JDBCUtils {
 
     //创建一个DBCP数据库连接池
     private static DataSource dbcp;
-    static{
+    static {
         try {
             Properties prop = new Properties();
             InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream("dbcp.properties");
@@ -31,6 +32,25 @@ public class JDBCUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    //创建一个Druid数据库连接池
+    private static DataSource druid;
+    static {
+        try {
+            Properties prop = new Properties();
+            InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream("druid.properties");
+            prop.load(is);
+            druid = DruidDataSourceFactory.createDataSource(prop);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    //通过druid数据库连接池获取数据库连接
+    public static Connection getConnectionViaDruid() throws Exception {
+        Connection connect = druid.getConnection();
+        return connect;
     }
 
     //通过c3p0数据库连接池获取数据库连接
