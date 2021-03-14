@@ -44,7 +44,8 @@ public class C3P0Test {
     @Test
     public void testConnction2() throws Exception {
         //根据配置文件初始化c3p0数据库连接池
-        Connection connect = JDBCUtils.getConnection1();
+        ComboPooledDataSource cpds = new ComboPooledDataSource("helloc3p0");
+        Connection connect = cpds.getConnection();
         System.out.println(connect);
 
         //DataSources.destroy(cpds);
