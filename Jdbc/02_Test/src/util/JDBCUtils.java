@@ -1,7 +1,10 @@
 package util;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
+import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.commons.dbcp.BasicDataSourceFactory;
 
+import javax.sql.DataSource;
 import java.io.InputStream;
 import java.sql.*;
 import java.util.Properties;
@@ -14,11 +17,30 @@ import java.util.Properties;
  */
 public class JDBCUtils {
 
-    //将数据库连接池声明为静态，减少资源的占用
+    //数据库连接池只需要提供一个
     private static ComboPooledDataSource cpds = new ComboPooledDataSource("helloc3p0");
 
+    //创建一个DBCP数据库连接池
+    private static DataSource dbcp;
+    static{
+        try {
+            Properties prop = new Properties();
+            InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream("dbcp.properties");
+            prop.load(is);
+            dbcp = BasicDataSourceFactory.createDataSource(prop);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     //通过c3p0数据库连接池获取数据库连接
-    public static Connection getConnection1() throws Exception {
+    public static Connection getConnectionViaDBPS() throws Exception {
+        Connection connect = dbcp.getConnection();
+        return connect;
+    }
+
+    //通过c3p0数据库连接池获取数据库连接
+    public static Connection getConnectionViaC3P0() throws Exception {
         Connection connect = cpds.getConnection();
         return connect;
     }
