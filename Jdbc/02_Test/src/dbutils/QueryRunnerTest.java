@@ -2,12 +2,15 @@ package dbutils;
 
 import bean.Customer;
 import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.*;
 import org.junit.Test;
 import util.JDBCUtils;
 
 import java.sql.Connection;
 import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -125,7 +128,7 @@ public class QueryRunnerTest {
 
     //查询表中特殊值
     @Test
-    public void testQueryValue(){
+    public void testQueryValue() {
         Connection connect = null;
         try {
             QueryRunner runner = new QueryRunner();
@@ -139,6 +142,38 @@ public class QueryRunnerTest {
             //Long value = (Long) runner.query(connect, sql, handler);
             Date maxBirth = (Date) runner.query(connect, sql, handler);
             System.out.println(maxBirth);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            JDBCUtils.closeResource(connect, null);
+        }
+    }
+
+    //自定义ResultSetHandler实现类
+    @Test
+    public void testCustomHandler() {
+        Connection connect = null;
+        try {
+            QueryRunner runner = new QueryRunner();
+            connect = JDBCUtils.getConnectionViaDruid();
+            String sql = "select id, name, email, birth from customers where id = ?";
+
+            //自定义ResultSetHandler实现类
+            ResultSetHandler<Customer> handler = new ResultSetHandler<Customer>() {
+                @Override
+                public Customer handle(ResultSet rs) throws SQLException {
+                    if (rs.next()) {
+                        int id = rs.getInt("id");
+                        String name = rs.getString("name");
+                        String email = rs.getString("email");
+                        Date birth = rs.getDate("birth");
+                        return new Customer(id, name, email, birth);
+                    }
+                    return null;
+                }
+            };
+            Customer customer = runner.query(connect, sql, handler, 1);
+            System.out.println(customer);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
